@@ -5,6 +5,7 @@
   "packageManager": "npm",
   "dependencies": {
     "@vinext/cloudflare": "latest",
+    "motion": "^13.4.0",
     "react": "latest",
     "react-dom": "latest",
     "react-server-dom-webpack": "latest",

@@ -1,70 +1,149 @@
-const links = [
+"use client";
+
+import { useState, useEffect } from "react";
+import { AnimatePresence, LazyMotion, domAnimation, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
+import Video from "@/components/video";
+import Carousel, { type MediaItem } from "@/components/carousel";
+
+const projects = [
   {
-    href: "https://github.com/cloudflare/vinext",
-    label: "vinext",
+    title: "¿Me puedo quedar?",
+    description:
+      "A web platform that helps people evaluate whether a municipality in Castilla y León fits their needs by combining public data on services, connectivity, education, healthcare, housing, and local opportunities.",
+    media: [
+      { type: "video", src: "/projects/mepuedoquedar-es/video.mp4" },
+      { type: "img", src: "/projects/mepuedoquedar-es/0.jpg" },
+      { type: "img", src: "/projects/mepuedoquedar-es/1.jpg" },
+      { type: "img", src: "/projects/mepuedoquedar-es/2.jpg" },
+    ] as MediaItem[],
   },
   {
-    href: "https://developers.cloudflare.com/workers/",
-    label: "Workers",
+    title: "Dione",
+    description:
+      "A platform designed to simplify how people interact with AI. Whether you're a developer, researcher, or just curious, Dione lets you discover, preview, and install AI apps instantly, without the need for complex setup or infrastructure.",
+    media: [
+      { type: "img", src: "/projects/dione/0.jpg" },
+      { type: "video", src: "/projects/dione/video.mp4" },
+      { type: "img", src: "/projects/dione/1.jpg" },
+      { type: "img", src: "/projects/dione/2.jpg" },
+      { type: "img", src: "/projects/dione/3.jpg" },
+    ] as MediaItem[],
+  },
+  {
+    title: "Applio",
+    description:
+      "A powerful voice conversion tool focused on simplicity, quality, and performance. Applio offers a straightforward platform for high-quality voice transformations. Its flexible design allows for customization through plugins and configurations, catering to a wide range of projects.",
+    media: [
+      { type: "img", src: "/projects/applio/1.jpg" },
+      { type: "img", src: "/projects/applio/2.jpg" }
+    ] as MediaItem[],
   },
 ];
 
-export const revalidate = 300;
-
 export default function Home() {
+  const [active, setActive] = useState<MediaItem | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const renderMedia = (item: MediaItem, isMax = false) =>
+    item.type === "video" ? (
+      <Video src={item.src} isMax={isMax} />
+    ) : (
+      <img
+        src={item.src}
+        alt="Media"
+        className="w-full h-full max-w-5xl"
+      />
+    );
+
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-950">
-      <section className="mx-auto flex max-w-4xl flex-col gap-8">
-        <div className="flex flex-col gap-4">
-          <p className="text-sm font-semibold uppercase tracking-wide text-orange-600">
-            vinext + Cloudflare Workers
-          </p>
-          <h1 className="max-w-2xl text-4xl font-semibold leading-tight sm:text-5xl">
-            Build Next.js-style apps with Vite and deploy them to the edge.
-          </h1>
-          <p className="max-w-2xl text-lg leading-8 text-slate-700">
-            This App Router project is wired for vinext, Tailwind CSS, and Cloudflare Workers.
-          </p>
-        </div>
+    <LazyMotion features={domAnimation}>
+      <main className="mt-[10svh] pb-10 max-w-[75ch] flex flex-col gap-10 justify-start items-start mx-auto">
+        <section>
+          <div className="flex flex-col gap-2 w-full">
+            <h1 className="text-5xl">David Lahoz</h1>
+            <h3 className="text-xl px-0.5">is a <span className="italic font-medium">frontend developer</span> and <span className="italic font-medium">marketing student</span> working across digital products, data, AI and brand experiences.</h3>
+          </div>
+        </section>
+        <section className="px-0.5 w-full">
+          <div className="flex flex-col gap-6 w-full">
+            <span className="uppercase font-bold text-sm">Projects</span>
+            <ul className="grid gap-6 w-full">
+              {projects.map((project) => (
+                <li key={project.title} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2 w-full">
+                    <span className="text-xl">{project.title}</span>
+                    <span className="text-xs">{project.description}</span>
+                  </div>
+                  <div className="relative w-full">
+                    <Carousel
+                      media={project.media}
+                      setActive={setActive}
+                      renderMedia={renderMedia}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-slate-200 bg-white p-5">
-            <h2 className="font-semibold">Develop</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Run the vinext dev server locally.</p>
-            <code className="mt-4 block rounded bg-slate-100 px-3 py-2 text-sm">pnpm run dev</code>
-          </div>
-          <div className="rounded-lg border border-slate-200 bg-white p-5">
-            <h2 className="font-semibold">Build</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Create Worker-ready production output.</p>
-            <code className="mt-4 block rounded bg-slate-100 px-3 py-2 text-sm">pnpm run build</code>
-          </div>
-          <div className="rounded-lg border border-slate-200 bg-white p-5">
-            <h2 className="font-semibold">Deploy</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">Ship the generated Worker with Wrangler.</p>
-            <code className="mt-4 block rounded bg-slate-100 px-3 py-2 text-sm">pnpm run deploy</code>
-          </div>
-        </div>
-
-        <nav className="flex flex-wrap gap-3">
-          {links.map((link) => (
-            <a
-              className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100"
-              href={link.href}
-              key={link.href}
-              rel="noreferrer"
-              target="_blank"
+        <AnimatePresence>
+          {active && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              onClick={() => setActive(null)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setActive(null);
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label="Close preview"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out bg-black/80 backdrop-blur-md"
             >
-              {link.label}
-            </a>
-          ))}
-          <a
-            className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-100"
-            href="/api/hello"
-          >
-            API route
-          </a>
-        </nav>
-      </section>
-    </main>
+              <m.div
+                initial={{
+                  scale: shouldReduceMotion ? 1 : 0.93,
+                  opacity: 0,
+                }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                  transition: {
+                    type: "spring",
+                    duration: 0.32,
+                    bounce: 0.08,
+                  },
+                }}
+                exit={{
+                  scale: shouldReduceMotion ? 1 : 0.93,
+                  opacity: 0,
+                  transition: {
+                    duration: 0.18,
+                    ease: [0.23, 1, 0.32, 1],
+                  },
+                }}
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+                className="relative z-10 cursor-default overflow-hidden"
+              >
+                {renderMedia(active, true)}
+              </m.div>
+            </m.div>
+          )}
+        </AnimatePresence>
+      </main>
+    </LazyMotion>
   );
 }
