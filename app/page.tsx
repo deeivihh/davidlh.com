@@ -121,7 +121,7 @@ export default function Home() {
             <span
               className={`absolute left-full top-1/2 -translate-y-1/2 text-xs transition-[opacity,margin-left,filter,pointer-events] duration-200 whitespace-nowrap select-none ${msg
                 ? "ml-2 opacity-100 blur-none pointer-events-auto"
-                : "-ml-2 group-hover:ml-2 opacity-0 group-hover:opacity-100 blur group-hover:blur-none pointer-events-none group-hover:pointer-events-auto"
+                : "hidden sm:inline -ml-2 group-hover:ml-2 opacity-0 group-hover:opacity-100 blur group-hover:blur-none pointer-events-none group-hover:pointer-events-auto"
                 }`}
             >
               {msg || "(one click to copy — two to open in your mail client)"}
