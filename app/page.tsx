@@ -55,6 +55,17 @@ type LikeItem = {
 
 const likes: LikeItem[] = [
   {
+    title: "Anthropic — Keep Thinking with Claude",
+    category: "Campaign",
+    description:
+      "A campaign that turns “having a problem” into a reason for optimism.",
+    media: {
+      type: "youtube",
+      src: "FDNkDBNR7AM",
+      title: "Anthropic — Keep Thinking with Claude",
+    },
+  },
+  {
     title: "Honda — Keep Up",
     category: "Campaign",
     description:
@@ -66,8 +77,30 @@ const likes: LikeItem[] = [
     },
   },
   {
-    title: "Ministerio de Igualdad — El hombre blandengue",
+    title: "Zohran Mamdani — Zohran for NYC",
+    category: "Political campaign",
+    description:
+      "A refreshing, human, and deeply effective digital campaign that shows how politics can be done differently.",
+    media: {
+      type: "youtube",
+      src: "UzNEFwLz6C4",
+      title: "Zohran Mamdani — Zohran for NYC",
+    },
+  },
+  {
+    title: "a16z — We’re Going Back to the Moon",
     category: "Campaign",
+    description:
+      "A cinematic reminder that the future is still being built.",
+    media: {
+      type: "youtube",
+      src: "8f2GtJaligw",
+      title: "a16z — We’re Going Back to the Moon",
+    },
+  },
+  {
+    title: "Ministerio de Igualdad — El hombre blandengue",
+    category: "Political Campaign",
     description:
       "A 1984 interview, re-edited into a message for today.",
     media: {
@@ -105,9 +138,6 @@ export default function Home() {
 
   useEffect(() => () => clearTimeout(timer.current!), []);
 
-  useEffect(() => {
-    import("@justinribeiro/lite-youtube");
-  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
