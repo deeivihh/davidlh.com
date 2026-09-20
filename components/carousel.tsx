@@ -21,6 +21,7 @@ export default function Carousel({
   const containerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ isDown: false, startX: 0, scroll: 0, moved: false });
   const [isDragging, setIsDragging] = useState(false);
+  const [maxWidth, setMaxWidth] = useState<number | undefined>(undefined);
 
   const stopDrag = () => {
     drag.current.isDown = false;
@@ -32,9 +33,45 @@ export default function Carousel({
     const el = containerRef.current;
     if (!el) return;
 
+    const updateMaxWidth = () => {
+      const buttons = Array.from(
+        el.querySelectorAll(":scope > button")
+      ) as HTMLElement[];
+      const targetButtons = buttons.slice(0, Math.min(media.length, 3));
+      if (targetButtons.length === 0) return;
+      if (!targetButtons.every((btn) => btn.offsetWidth > 0)) return;
+
+      const gap = parseFloat(window.getComputedStyle(el).gap) || 10;
+      const totalWidth =
+        targetButtons.reduce((sum, btn) => sum + btn.offsetWidth, 0) +
+        (targetButtons.length - 1) * gap;
+
+      const parentWidth = el.parentElement?.clientWidth || window.innerWidth;
+      setMaxWidth(Math.ceil(Math.min(totalWidth, parentWidth)));
+    };
+
+    updateMaxWidth();
+
+    const resizeObserver = new ResizeObserver(updateMaxWidth);
+    const buttons = el.querySelectorAll(":scope > button");
+    buttons.forEach((btn) => resizeObserver.observe(btn));
+
+    window.addEventListener("resize", updateMaxWidth);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateMaxWidth);
+    };
+  }, [media]);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
     const handleMouseDown = (e: MouseEvent) => {
       const rect = el.getBoundingClientRect();
       if (e.clientY >= rect.top + el.clientHeight) return;
+      if (el.scrollWidth <= el.clientWidth) return;
       drag.current = { isDown: true, startX: e.pageX, scroll: el.scrollLeft, moved: false };
       setIsDragging(true);
     };
@@ -68,7 +105,10 @@ export default function Carousel({
   return (
     <div
       ref={containerRef}
-      className={`flex gap-2.5 overflow-x-auto w-full overscroll-x-contain pb-3 pr-6 custom-scrollbar select-none ${
+      style={{
+        maxWidth: maxWidth ? `${maxWidth}px` : undefined,
+      }}
+      className={`flex gap-2.5 overflow-x-auto w-fit max-w-full overscroll-x-contain pb-3 custom-scrollbar select-none ${
         isDragging ? "cursor-grabbing [&_*]:cursor-grabbing" : "cursor-grab"
       }`}
     >
@@ -77,7 +117,7 @@ export default function Carousel({
           key={item.src}
           type="button"
           onClick={() => !drag.current.moved && setActive(item)}
-          className={`h-32 sm:h-40 shrink-0 p-0 border-0 bg-transparent text-left cursor-pointer ${
+          className={`h-32 sm:h-40 shrink-0 w-auto p-0 border-0 bg-transparent text-left cursor-pointer overflow-hidden [&>img]:h-full [&>img]:w-auto [&>img]:object-cover [&>video]:h-full [&>video]:w-auto ${
             isDragging ? "cursor-grabbing" : ""
           }`}
         >
