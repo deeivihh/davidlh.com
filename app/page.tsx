@@ -66,6 +66,17 @@ const likes: LikeItem[] = [
     },
   },
   {
+    title: "Apple — Great Ideas Start Here",
+    category: "Campaign",
+    description:
+      "A student campaign that makes failure feel like part of the process.",
+    media: {
+      type: "youtube",
+      src: "77uoRieSk8s",
+      title: "Apple — Great Ideas Start Here",
+    },
+  },
+  {
     title: "Honda — Keep Up",
     category: "Campaign",
     description:
@@ -74,17 +85,6 @@ const likes: LikeItem[] = [
       type: "youtube",
       src: "iO7BmPoL6a4",
       title: "Honda — Keep Up",
-    },
-  },
-  {
-    title: "Zohran Mamdani — Zohran for NYC",
-    category: "Political campaign",
-    description:
-      "A refreshing, human, and deeply effective digital campaign that shows how politics can be done differently.",
-    media: {
-      type: "youtube",
-      src: "UzNEFwLz6C4",
-      title: "Zohran Mamdani — Zohran for NYC",
     },
   },
   {
@@ -99,14 +99,14 @@ const likes: LikeItem[] = [
     },
   },
   {
-    title: "Ministerio de Igualdad — El hombre blandengue",
-    category: "Political Campaign",
+    title: "Zohran Mamdani — Zohran for NYC",
+    category: "Political campaign",
     description:
-      "A 1984 interview, re-edited into a message for today.",
+      "A refreshing, human, and deeply effective digital campaign that shows how politics can be done differently.",
     media: {
       type: "youtube",
-      src: "ZsVWRpExdGw",
-      title: "Ministerio de Igualdad — El hombre blandengue",
+      src: "UzNEFwLz6C4",
+      title: "Zohran Mamdani — Zohran for NYC",
     },
   },
 ];
@@ -348,7 +348,7 @@ export default function Home() {
                 }}
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()}
-                className="relative z-10 cursor-default overflow-hidden max-w-full max-h-[90svh] flex items-center justify-center"
+                className="relative z-10 cursor-default overflow-visible max-w-full max-h-[90svh] flex items-center justify-center"
               >
                 {renderMedia(active, true)}
               </m.div>
