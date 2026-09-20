@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, LazyMotion, domAnimation, useReducedMotion } from "motion/react";
 import * as m from "motion/react-m";
 import Video from "@/components/video";
+import YouTubeEmbed from "@/components/youtube";
 import Carousel, { type MediaItem } from "@/components/carousel";
 
 const projects = [
@@ -44,6 +45,39 @@ const projects = [
   },
 ];
 
+type LikeItem = {
+  title: string;
+  category?: string;
+  description: string;
+  media?: MediaItem;
+  href?: string;
+};
+
+const likes: LikeItem[] = [
+  {
+    title: "Honda — Keep Up",
+    category: "Campaign",
+    description:
+      "This campaign does not ask you to keep up. It challenges you to.",
+    media: {
+      type: "youtube",
+      src: "iO7BmPoL6a4",
+      title: "Honda — Keep Up",
+    },
+  },
+  {
+    title: "Ministerio de Igualdad — El hombre blandengue",
+    category: "Campaign",
+    description:
+      "A 1984 interview, re-edited into a message for today.",
+    media: {
+      type: "youtube",
+      src: "ZsVWRpExdGw",
+      title: "Ministerio de Igualdad — El hombre blandengue",
+    },
+  },
+];
+
 export default function Home() {
   const [active, setActive] = useState<MediaItem | null>(null);
   const [msg, setMsg] = useState("");
@@ -72,6 +106,10 @@ export default function Home() {
   useEffect(() => () => clearTimeout(timer.current!), []);
 
   useEffect(() => {
+    import("@justinribeiro/lite-youtube");
+  }, []);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -90,10 +128,14 @@ export default function Home() {
     }
   }, [active]);
 
-  const renderMedia = (item: MediaItem, isMax = false) =>
-    item.type === "video" ? (
-      <Video src={item.src} isMax={isMax} />
-    ) : (
+  const renderMedia = (item: MediaItem, isMax = false) => {
+    if (item.type === "video") {
+      return <Video src={item.src} isMax={isMax} />;
+    }
+    if (item.type === "youtube") {
+      return <YouTubeEmbed videoId={item.src} title={item.title ?? "Honda — Keep Up"} />;
+    }
+    return (
       <img
         src={item.src}
         alt="Media"
@@ -104,10 +146,11 @@ export default function Home() {
         }
       />
     );
+  };
 
   return (
     <LazyMotion features={domAnimation}>
-      <main className="mt-[8svh] pb-10 max-w-[75ch] flex flex-col gap-10 justify-start items-start mx-auto">
+      <main className="max-md:mt-[8svh] mt-[10svh] pb-10 max-w-[75ch] flex flex-col gap-14 justify-start items-start mx-auto">
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-2 w-full">
             <h1 className="text-5xl">David Lahoz</h1>
@@ -129,7 +172,7 @@ export default function Home() {
           </address>
         </section>
         <section className="px-0.5 w-full">
-          <div className="flex flex-col gap-6 w-full">
+          <div className="flex flex-col gap-4 w-full">
             <span className="uppercase font-bold text-sm">Projects</span>
             <ul className="grid gap-6 w-full">
               {projects.map((project) => (
@@ -152,6 +195,64 @@ export default function Home() {
             </ul>
           </div>
         </section>
+        <section className="px-0.5 w-full flex flex-col gap-4">
+          <span className="uppercase font-bold text-sm">About</span>
+          <div className="flex flex-col gap-2">
+            <p>
+              David started building things online out of curiosity:
+              websites, tools, communities and ideas that could become useful.
+            </p>
+
+            <p>
+              He is currently studying Marketing and exploring how
+              technology, design and communication can work together.
+            </p>
+
+            <a
+              href="https://www.linkedin.com/in/deeivihh/"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 w-fit underline underline-offset-4 group"
+            >
+              Connect with David on <span className="group-hover:text-[#0077B5] transition-colors duration-200">Linkedin</span> →
+            </a>
+          </div>
+        </section>
+        <section className="px-0.5 w-full flex flex-col gap-4">
+          <span className="uppercase font-bold text-sm">Things he likes</span>
+          <div className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-4">
+              {likes.map((item) => (
+                <li key={item.title}>
+                  <article
+                    onClick={() => {
+                      if (item.href) {
+                        window.open(item.href, "_blank", "noopener,noreferrer");
+                      } else if (item.media) {
+                        setActive(item.media);
+                      }
+                    }}
+                    className="group cursor-pointer flex flex-col gap-1 w-fit"
+                  >
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-medium group-hover:underline underline-offset-4">
+                        {item.title}
+                      </p>
+                      {item.category && (
+                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500 font-normal select-none">
+                          {item.category}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-[#666666]">
+                      {item.description}
+                    </p>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
         <AnimatePresence>
           {active && (
@@ -169,7 +270,8 @@ export default function Home() {
               tabIndex={0}
               role="button"
               aria-label="Close preview"
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out bg-black/80 backdrop-blur-md"
+              className={`fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out ${active.type === "youtube" ? "bg-black" : "bg-black/80 backdrop-blur-md"
+                }`}
             >
               <m.div
                 initial={{
@@ -195,7 +297,7 @@ export default function Home() {
                 }}
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()}
-                className="relative z-10 cursor-default overflow-hidden max-w-full max-h-[85svh] flex items-center justify-center"
+                className="relative z-10 cursor-default overflow-hidden max-w-full max-h-[90svh] flex items-center justify-center"
               >
                 {renderMedia(active, true)}
               </m.div>

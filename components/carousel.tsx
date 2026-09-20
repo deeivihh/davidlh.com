@@ -3,8 +3,9 @@
 import { useRef, useState, useEffect } from "react";
 
 export type MediaItem = {
-  type: "video" | "img";
+  type: "video" | "img" | "youtube";
   src: string;
+  title?: string;
 };
 
 type CarouselProps = {
