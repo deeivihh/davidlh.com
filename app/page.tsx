@@ -186,11 +186,14 @@ export default function Home() {
             <h1 className="text-5xl">David Lahoz</h1>
             <h3 className="text-xl px-0.5">is a <span className="italic font-medium">frontend developer</span> and <span className="italic font-medium">marketing student</span> working across digital products, data, AI and brand experiences.</h3>
           </div>
-          <address
-            onClick={handleContactClick}
-            className="group relative flex items-center w-fit px-0.5 cursor-pointer select-none"
-          >
-            <a className="font-semibold">hello@davidlh.com</a>
+          <address className="group relative flex items-center w-fit px-0.5 select-none not-italic">
+            <button
+              type="button"
+              onClick={handleContactClick}
+              className="font-semibold cursor-pointer text-left"
+            >
+              hello@davidlh.com
+            </button>
             <span
               className={`absolute left-full top-1/2 -translate-y-1/2 text-xs transition-[opacity,margin-left,filter,pointer-events] duration-200 whitespace-nowrap select-none ${msg
                 ? "ml-2 opacity-100 blur-none pointer-events-auto"
@@ -252,34 +255,52 @@ export default function Home() {
           <span className="uppercase font-bold text-sm">Things he likes</span>
           <div className="flex flex-col gap-2">
             <ul className="flex flex-col gap-4">
-              {likes.map((item) => (
-                <li key={item.title}>
-                  <article
-                    onClick={() => {
-                      if (item.href) {
-                        window.open(item.href, "_blank", "noopener,noreferrer");
-                      } else if (item.media) {
-                        setActive(item.media);
-                      }
-                    }}
-                    className="group cursor-pointer flex flex-col gap-1 w-fit"
-                  >
+              {likes.map((item) => {
+                const content = (
+                  <>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-medium group-hover:underline underline-offset-4">
+                      <span className="font-medium group-hover:underline underline-offset-4">
                         {item.title}
-                      </p>
+                      </span>
                       {item.category && (
                         <span className="text-[11px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500 font-normal select-none">
                           {item.category}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#666666]">
+                    <span className="text-xs text-[#666666]">
                       {item.description}
-                    </p>
-                  </article>
-                </li>
-              ))}
+                    </span>
+                  </>
+                );
+
+                return (
+                  <li key={item.title}>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
+                      >
+                        {content}
+                      </a>
+                    ) : item.media ? (
+                      <button
+                        type="button"
+                        onClick={() => setActive(item.media!)}
+                        className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
+                      >
+                        {content}
+                      </button>
+                    ) : (
+                      <div className="flex flex-col gap-1 w-fit text-left">
+                        {content}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </section>

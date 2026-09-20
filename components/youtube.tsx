@@ -220,9 +220,11 @@ export default function YouTubeEmbed({
     <div className="relative group select-none flex items-center justify-center w-[min(90vw,calc(90svh*16/9))] max-w-[90vw] max-h-[90svh] aspect-video overflow-hidden bg-black [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:block [&_iframe]:border-0">
       <div ref={containerRef} className="w-full h-full pointer-events-none" />
 
-      <div
-        className="absolute inset-0 z-10 cursor-pointer"
+      <button
+        type="button"
+        aria-label={isPlaying ? "Pause video" : "Play video"}
         onClick={togglePlay}
+        className="absolute inset-0 z-10 cursor-pointer w-full h-full bg-transparent border-0"
       />
 
       <div className="absolute bottom-0 z-20 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white transition-opacity duration-150 ease-out w-full h-15 px-4 opacity-0 group-hover:opacity-100">
