@@ -109,6 +109,17 @@ const likes: LikeItem[] = [
       title: "Zohran Mamdani — Zohran for NYC",
     },
   },
+  {
+    title: "Andalucía — Andalusian Crush",
+    category: "Campaign",
+    description:
+      "A tourism campaign that turns a destination into an irresistible warning.",
+    media: {
+      type: "youtube",
+      src: "oTtD6zoT-EA",
+      title: "Andalucía — Andalusian Crush",
+    },
+  },
 ];
 
 export default function Home() {
