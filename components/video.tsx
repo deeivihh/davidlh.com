@@ -58,7 +58,7 @@ export default function Video({
   }
 
   return (
-    <div className="relative group select-none flex items-center justify-center">
+    <div className="relative group select-none flex items-center justify-center w-fit max-w-full max-h-[85svh]">
       <video
         muted
         ref={videoRef}
@@ -74,7 +74,7 @@ export default function Video({
             );
           }
         }}
-        className="max-w-4xl max-h-[85vh] w-auto h-auto block cursor-pointer"
+        className="max-w-full max-h-[85svh] lg:max-w-4xl w-auto h-auto block cursor-pointer object-contain"
       />
 
       <div className="absolute bottom-0 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white transition-opacity duration-150 ease-out w-full h-10 px-4 opacity-0 group-hover:opacity-100">

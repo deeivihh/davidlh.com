@@ -99,7 +99,7 @@ export default function Home() {
         alt="Media"
         className={
           isMax
-            ? "max-w-4xl max-h-[85vh] w-auto h-auto block"
+            ? "max-w-full max-h-[85svh] lg:max-w-4xl w-auto h-auto block object-contain"
             : "h-full w-auto block object-cover"
         }
       />
@@ -195,7 +195,7 @@ export default function Home() {
                 }}
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()}
-                className="relative z-10 cursor-default overflow-hidden"
+                className="relative z-10 cursor-default overflow-hidden max-w-full max-h-[85svh] flex items-center justify-center"
               >
                 {renderMedia(active, true)}
               </m.div>
