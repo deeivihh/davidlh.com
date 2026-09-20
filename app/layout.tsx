@@ -16,6 +16,33 @@ const body = Lora({
 
 export const metadata: Metadata = {
   title: "David Lahoz",
+  description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
+  alternates: {
+    canonical: "https://davidlh.com",
+  },
+  openGraph: {
+    images: "/og/og-image.jpg",
+    title: "David Lahoz",
+    description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
+    type: "website",
+    url: "https://davidlh.com",
+    siteName: "David Lahoz",
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: "/og/og-image.jpg",
+    title: "David Lahoz",
+    description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
+  },
+  icons: {
+    icon: [
+      { url: "/og/favicon.jpg" },
+    ],
+  },
+  keywords: ["David Lahoz", "davidlh", "frontend", "developer", "marketing", "data", "AI", "brand", "experiences"],
+  authors: [{ name: "David Lahoz" }],
+  creator: "David Lahoz",
+  publisher: "David Lahoz",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
