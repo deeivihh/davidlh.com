@@ -6,6 +6,7 @@ import * as m from "motion/react-m";
 import Video from "@/components/video";
 import YouTubeEmbed from "@/components/youtube";
 import Carousel, { type MediaItem } from "@/components/carousel";
+import Link from "vinext/shims/link";
 
 const projects = [
   {
@@ -119,6 +120,24 @@ const likes: LikeItem[] = [
       src: "oTtD6zoT-EA",
       title: "Andalucía — Andalusian Crush",
     },
+  },
+];
+
+type ArticleItem = {
+  title: string;
+  category?: string;
+  date?: string;
+  description: string;
+  media?: MediaItem;
+  href?: string;
+};
+
+const articles: ArticleItem[] = [
+  {
+    title: "The AI that could kill us might also free us",
+    description:
+      "AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.",
+    href: "/articles/1",
   },
 ];
 
@@ -296,6 +315,52 @@ export default function Home() {
                       >
                         {content}
                       </a>
+                    ) : item.media ? (
+                      <button
+                        type="button"
+                        onClick={() => setActive(item.media!)}
+                        className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
+                      >
+                        {content}
+                      </button>
+                    ) : (
+                      <div className="flex flex-col gap-1 w-fit text-left">
+                        {content}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+        <section className="px-0.5 w-full flex flex-col gap-4">
+          <span className="uppercase font-bold text-sm">Articles</span>
+          <div className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-4">
+              {articles.map((item) => {
+                const content = (
+                  <>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium group-hover:underline underline-offset-4">
+                        {item.title}
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#666666]">
+                      {item.description}
+                    </span>
+                  </>
+                );
+
+                return (
+                  <li key={item.title}>
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
+                      >
+                        {content}
+                      </Link>
                     ) : item.media ? (
                       <button
                         type="button"
