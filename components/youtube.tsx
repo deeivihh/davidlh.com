@@ -46,7 +46,7 @@ const setSavedVolume = (val: number) => {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem("yt_volume", String(val));
-  } catch {}
+  } catch { }
 };
 
 export default function YouTubeEmbed({
@@ -83,7 +83,7 @@ export default function YouTubeEmbed({
         if (Array.isArray(tracks) && tracks.length > 0) {
           tracksRef.current = tracks;
         }
-      } catch {}
+      } catch { }
     };
 
     loadYouTubeAPI()
@@ -119,7 +119,7 @@ export default function YouTubeEmbed({
                   "allow",
                   "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 );
-              } catch {}
+              } catch { }
 
               const initialVol = getSavedVolume();
               try {
@@ -131,7 +131,7 @@ export default function YouTubeEmbed({
                 event.target.setVolume?.(initialVol);
                 setIsMuted(isMobile);
                 setVolume(initialVol);
-              } catch {}
+              } catch { }
               event.target.playVideo();
             },
             onApiChange: (event: any) => {
@@ -141,7 +141,7 @@ export default function YouTubeEmbed({
               if (cancelled) return;
               if (event.data === yt.PlayerState.PLAYING) {
                 setIsPlaying(true);
-                try { event.target.loadModule?.("captions"); } catch {}
+                try { event.target.loadModule?.("captions"); } catch { }
                 setTimeout(() => {
                   if (!cancelled) updateTracks(playerInstance.current);
                 }, 400);
@@ -154,7 +154,7 @@ export default function YouTubeEmbed({
                     event.target.setVolume?.(initialVol);
                     setIsMuted(false);
                     setVolume(initialVol);
-                  } catch {}
+                  } catch { }
                 }
               } else if (
                 event.data === yt.PlayerState.PAUSED ||
@@ -166,11 +166,11 @@ export default function YouTubeEmbed({
           },
         });
       })
-      .catch(() => {});
+      .catch(() => { });
 
     return () => {
       cancelled = true;
-      try { playerInstance.current?.destroy?.(); } catch {}
+      try { playerInstance.current?.destroy?.(); } catch { }
       playerInstance.current = null;
     };
   }, [videoId]);
@@ -220,7 +220,7 @@ export default function YouTubeEmbed({
           }
           player.setVolume?.(clamped);
         }
-      } catch {}
+      } catch { }
     }
   };
 
@@ -239,7 +239,7 @@ export default function YouTubeEmbed({
         player.mute?.();
         setIsMuted(true);
       }
-    } catch {}
+    } catch { }
   };
 
   const toggleCaptions = () => {
@@ -250,12 +250,12 @@ export default function YouTubeEmbed({
       try {
         player.setOption?.("captions", "track", {});
         player.unloadModule?.("captions");
-      } catch {}
+      } catch { }
       setIsCaptionsEnabled(false);
       return;
     }
 
-    try { player.loadModule?.("captions"); } catch {}
+    try { player.loadModule?.("captions"); } catch { }
 
     const applyEnglishTrack = () => {
       const tracks = tracksRef.current.length
@@ -278,11 +278,11 @@ export default function YouTubeEmbed({
               languageCode: chosen.languageCode,
             });
           }
-        } catch {}
+        } catch { }
       } else {
         try {
           player.setOption?.("captions", "track", { languageCode: "en" });
-        } catch {}
+        } catch { }
       }
     };
 
@@ -328,7 +328,7 @@ export default function YouTubeEmbed({
         />
       </div>
 
-      <div className="absolute top-full left-0 w-full flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white h-10 px-4">
+      <div className="absolute top-full inset-x-0 w-[50%] mx-auto mt-4 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white h-10 px-4">
         <button
           type="button"
           onClick={togglePlay}
@@ -369,9 +369,8 @@ export default function YouTubeEmbed({
             type="button"
             onClick={toggleCaptions}
             aria-label={isCaptionsEnabled ? "Desactivar subtítulos" : "Activar subtítulos"}
-            className={`cursor-pointer flex flex-col items-center justify-center w-5 h-5 relative transition-opacity duration-150 ${
-              isCaptionsEnabled ? "opacity-100 text-white" : "opacity-40 hover:opacity-80 text-white"
-            }`}
+            className={`cursor-pointer flex flex-col items-center justify-center w-5 h-5 relative transition-opacity duration-150 ${isCaptionsEnabled ? "opacity-100 text-white" : "opacity-40 hover:opacity-80 text-white"
+              }`}
           >
             <svg
               width="16"
