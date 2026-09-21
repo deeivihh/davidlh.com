@@ -328,7 +328,7 @@ export default function YouTubeEmbed({
         />
       </div>
 
-      <div className="absolute top-full inset-x-0 w-[50%] mx-auto mt-4 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white h-10 px-4">
+      <div className="absolute top-full inset-x-0 max-md:w-full w-[50%] mx-auto mt-4 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white h-10 px-4">
         <button
           type="button"
           onClick={togglePlay}
