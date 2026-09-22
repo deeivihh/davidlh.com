@@ -74,7 +74,7 @@ export default function YouTubeEmbed({
   const containerRef = useRef<HTMLDivElement>(null);
   const playerInstance = useRef<any>(null);
   const initialVolumeSet = useRef(false);
-  const prevVolume = useRef(getSavedVolume());
+  const prevVolume = useRef<number | null>(null);
   const tracksRef = useRef<any[]>([]);
 
   const [isPlaying, setIsPlaying] = useState(true);
