@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 export type MediaItem = {
   type: "video" | "img" | "youtube";
@@ -114,17 +114,72 @@ export default function Carousel({
       }`}
     >
       {media.map((item) => (
-        <button
+        <CarouselItem
           key={item.src}
-          type="button"
-          onClick={() => !drag.current.moved && setActive(item)}
-          className={`h-32 sm:h-40 shrink-0 w-auto p-0 border-0 bg-transparent text-left cursor-pointer overflow-hidden [&>img]:h-full [&>img]:w-auto [&>img]:object-cover [&>video]:h-full [&>video]:w-auto ${
-            isDragging ? "cursor-grabbing" : ""
-          }`}
-        >
-          {renderMedia(item)}
-        </button>
+          item={item}
+          isDragging={isDragging}
+          drag={drag}
+          setActive={setActive}
+          renderMedia={renderMedia}
+        />
       ))}
     </div>
+  );
+}
+
+function CarouselItem({
+  item,
+  isDragging,
+  drag,
+  setActive,
+  renderMedia,
+}: {
+  item: MediaItem;
+  isDragging: boolean;
+  drag: React.MutableRefObject<{ isDown: boolean; startX: number; scroll: number; moved: boolean }>;
+  setActive: (item: MediaItem) => void;
+  renderMedia: (item: MediaItem, isMax?: boolean) => React.ReactNode;
+}) {
+  const wrapperRef = useRef<HTMLButtonElement>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  const handleLoaded = useCallback(() => setLoaded(true), []);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+
+    el.addEventListener("load", handleLoaded, true);
+    el.addEventListener("loadeddata", handleLoaded, true);
+
+    const imgs = Array.from(el.querySelectorAll("img"));
+    const videos = Array.from(el.querySelectorAll("video"));
+    const hasMedia = imgs.length > 0 || videos.length > 0;
+    const imgsReady = imgs.every((img) => img.complete && img.naturalWidth > 0);
+    const videosReady = videos.every((v) => v.readyState >= 2);
+    if (!hasMedia || (imgs.length > 0 ? imgsReady : true) && (videos.length > 0 ? videosReady : true)) {
+      setLoaded(true);
+    }
+
+    return () => {
+      el.removeEventListener("load", handleLoaded, true);
+      el.removeEventListener("loadeddata", handleLoaded, true);
+    };
+  }, [handleLoaded]);
+
+  return (
+    <button
+      ref={wrapperRef}
+      key={item.src}
+      type="button"
+      onClick={() => !drag.current.moved && setActive(item)}
+      className={`shrink-0 w-auto p-0 border-0 bg-transparent text-left cursor-pointer overflow-hidden [&>img]:h-full [&>img]:w-auto [&>img]:object-cover [&>video]:h-full [&>video]:w-auto transition-opacity duration-300 ${
+        loaded ? "h-32 sm:h-40 opacity-100" : "h-0 opacity-0"
+      } ${
+        isDragging ? "cursor-grabbing" : ""
+      }`}
+    >
+      {renderMedia(item)}
+    </button>
   );
 }

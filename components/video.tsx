@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 export default function Video({
   src,
@@ -12,6 +12,14 @@ export default function Video({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+
+  const handleLoaded = useCallback(() => setLoaded(true), []);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v && v.readyState >= 2) setLoaded(true);
+  }, []);
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -47,12 +55,16 @@ export default function Video({
   if (!isMax) {
     return (
       <video
+        ref={videoRef}
         src={src}
         autoPlay
         muted
         loop
         playsInline
-        className="h-full w-auto block pointer-events-none"
+        onLoadedData={handleLoaded}
+        className={`h-full w-auto block pointer-events-none transition-opacity duration-300 ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
       />
     );
   }
@@ -67,6 +79,7 @@ export default function Video({
         loop
         playsInline
         onClick={togglePlay}
+        onLoadedData={handleLoaded}
         onTimeUpdate={() => {
           if (videoRef.current && videoRef.current.duration) {
             setProgress(
@@ -74,7 +87,9 @@ export default function Video({
             );
           }
         }}
-        className="max-w-full max-h-[85svh] lg:max-w-4xl w-auto h-auto block cursor-pointer object-contain"
+        className={`max-w-full max-h-[85svh] lg:max-w-4xl w-auto h-auto block cursor-pointer object-contain transition-opacity duration-300 ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
       />
 
       <div className="absolute bottom-0 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white transition-opacity duration-150 ease-out w-full h-10 px-4 opacity-0 group-hover:opacity-100">
