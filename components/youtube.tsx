@@ -49,6 +49,22 @@ const setSavedVolume = (val: number) => {
   } catch { }
 };
 
+const getSavedCaptions = (): boolean => {
+  if (typeof window === "undefined") return false;
+  try {
+    return localStorage.getItem("yt_captions") === "true";
+  } catch {
+    return false;
+  }
+};
+
+const setSavedCaptions = (val: boolean) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem("yt_captions", String(val));
+  } catch { }
+};
+
 export default function YouTubeEmbed({
   videoId,
 }: {
@@ -67,14 +83,63 @@ export default function YouTubeEmbed({
   const [isMuted, setIsMuted] = useState(() =>
     typeof window !== "undefined" ? isMobileDevice() : false
   );
-  const [isCaptionsEnabled, setIsCaptionsEnabled] = useState(false);
+  const [isCaptionsEnabled, setIsCaptionsEnabled] = useState(() => getSavedCaptions());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const enableCaptionsTrack = (player: any) => {
+    if (!player) return;
+    try { player.loadModule?.("captions"); } catch { }
+
+    const tracks = tracksRef.current.length
+      ? tracksRef.current
+      : player.getOption?.("captions", "tracklist") || [];
+
+    if (Array.isArray(tracks) && tracks.length > 0) {
+      tracksRef.current = tracks;
+      const chosen =
+        tracks.find((t: any) =>
+          (t?.languageCode || t?.lang || t?.vss_id || "")
+            .toLowerCase()
+            .includes("en")
+        ) || tracks[0];
+
+      try {
+        player.setOption?.("captions", "track", chosen);
+        if (chosen?.languageCode) {
+          player.setOption?.("captions", "track", {
+            languageCode: chosen.languageCode,
+          });
+        }
+      } catch { }
+    } else {
+      try {
+        player.setOption?.("captions", "track", { languageCode: "en" });
+      } catch { }
+    }
+  };
+
+  const syncCaptions = (target: any) => {
+    try {
+      const track = target?.getOption?.("captions", "track");
+      const hasTrack = Boolean(
+        track &&
+        Object.keys(track).length > 0 &&
+        (track.languageCode || track.vss_id || track.lang || track.name)
+      );
+      if (hasTrack) {
+        setIsCaptionsEnabled(true);
+        setSavedCaptions(true);
+      } else if (!getSavedCaptions()) {
+        setIsCaptionsEnabled(false);
+      }
+    } catch { }
+  };
 
   useEffect(() => {
     let cancelled = false;
     const isMobile = isMobileDevice();
-    setIsCaptionsEnabled(false);
+    setIsCaptionsEnabled(getSavedCaptions());
     setIsLoading(true);
     setError(null);
     tracksRef.current = [];
@@ -136,10 +201,26 @@ export default function YouTubeEmbed({
                 setIsMuted(isMobile);
                 setVolume(initialVol);
               } catch { }
+
+              if (getSavedCaptions()) {
+                enableCaptionsTrack(event.target);
+                setTimeout(() => {
+                  if (!cancelled) {
+                    enableCaptionsTrack(event.target);
+                    syncCaptions(event.target);
+                  }
+                }, 300);
+              } else {
+                syncCaptions(event.target);
+              }
+
               event.target.playVideo();
             },
             onApiChange: (event: any) => {
-              if (!cancelled) updateTracks(event.target);
+              if (!cancelled) {
+                updateTracks(event.target);
+                syncCaptions(event.target);
+              }
             },
             onError: (event: any) => {
               if (cancelled) return;
@@ -163,7 +244,13 @@ export default function YouTubeEmbed({
                 setIsPlaying(true);
                 try { event.target.loadModule?.("captions"); } catch { }
                 setTimeout(() => {
-                  if (!cancelled) updateTracks(playerInstance.current);
+                  if (!cancelled) {
+                    updateTracks(playerInstance.current);
+                    if (getSavedCaptions()) {
+                      enableCaptionsTrack(playerInstance.current);
+                    }
+                    syncCaptions(playerInstance.current);
+                  }
                 }, 400);
 
                 if (!isMobile && !initialVolumeSet.current) {
@@ -280,43 +367,14 @@ export default function YouTubeEmbed({
         player.unloadModule?.("captions");
       } catch { }
       setIsCaptionsEnabled(false);
+      setSavedCaptions(false);
       return;
     }
 
-    try { player.loadModule?.("captions"); } catch { }
-
-    const applyEnglishTrack = () => {
-      const tracks = tracksRef.current.length
-        ? tracksRef.current
-        : player.getOption?.("captions", "tracklist") || [];
-
-      if (Array.isArray(tracks) && tracks.length > 0) {
-        tracksRef.current = tracks;
-        const chosen =
-          tracks.find((t: any) =>
-            (t?.languageCode || t?.lang || t?.vss_id || "")
-              .toLowerCase()
-              .includes("en")
-          ) || tracks[0];
-
-        try {
-          player.setOption?.("captions", "track", chosen);
-          if (chosen?.languageCode) {
-            player.setOption?.("captions", "track", {
-              languageCode: chosen.languageCode,
-            });
-          }
-        } catch { }
-      } else {
-        try {
-          player.setOption?.("captions", "track", { languageCode: "en" });
-        } catch { }
-      }
-    };
-
-    applyEnglishTrack();
-    setTimeout(applyEnglishTrack, 300);
+    enableCaptionsTrack(player);
+    setTimeout(() => enableCaptionsTrack(player), 300);
     setIsCaptionsEnabled(true);
+    setSavedCaptions(true);
   };
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
