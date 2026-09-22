@@ -397,7 +397,7 @@ export default function Home() {
               tabIndex={0}
               role="button"
               aria-label="Close preview"
-              className={`fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out ${active.type === "youtube" ? "bg-black" : "bg-black/80 backdrop-blur-md"
+              className={`fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out ${active.type === "youtube" ? "bg-black" : "bg-black/90 backdrop-blur"
                 }`}
             >
               <m.div
