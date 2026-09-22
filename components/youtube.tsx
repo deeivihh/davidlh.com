@@ -68,11 +68,15 @@ export default function YouTubeEmbed({
     typeof window !== "undefined" ? isMobileDevice() : false
   );
   const [isCaptionsEnabled, setIsCaptionsEnabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     const isMobile = isMobileDevice();
     setIsCaptionsEnabled(false);
+    setIsLoading(true);
+    setError(null);
     tracksRef.current = [];
 
     if (isMobile) setIsMuted(true);
@@ -137,9 +141,25 @@ export default function YouTubeEmbed({
             onApiChange: (event: any) => {
               if (!cancelled) updateTracks(event.target);
             },
+            onError: (event: any) => {
+              if (cancelled) return;
+              const errorMap: Record<number, string> = {
+                2: "Invalid video ID or parameter.",
+                5: "HTML5 player error.",
+                100: "Video not found or removed.",
+                101: "Playback on other websites has been disabled by the owner.",
+                150: "Playback on other websites has been disabled by the owner.",
+              };
+              setError(errorMap[event.data] || "Unable to play video.");
+              setIsLoading(false);
+            },
             onStateChange: (event: any) => {
               if (cancelled) return;
-              if (event.data === yt.PlayerState.PLAYING) {
+              if (event.data === yt.PlayerState.BUFFERING) {
+                setIsLoading(true);
+              } else if (event.data === yt.PlayerState.PLAYING) {
+                setIsLoading(false);
+                setError(null);
                 setIsPlaying(true);
                 try { event.target.loadModule?.("captions"); } catch { }
                 setTimeout(() => {
@@ -160,13 +180,21 @@ export default function YouTubeEmbed({
                 event.data === yt.PlayerState.PAUSED ||
                 event.data === yt.PlayerState.ENDED
               ) {
+                setIsLoading(false);
                 setIsPlaying(false);
+              } else if (event.data === yt.PlayerState.CUED) {
+                setIsLoading(false);
               }
             },
           },
         });
       })
-      .catch(() => { });
+      .catch(() => {
+        if (!cancelled) {
+          setError("Failed to load YouTube player.");
+          setIsLoading(false);
+        }
+      });
 
     return () => {
       cancelled = true;
@@ -317,18 +345,40 @@ export default function YouTubeEmbed({
 
   return (
     <div className="select-none w-[min(90vw,calc(80svh*16/9))] max-w-[90vw] aspect-video">
-      <div className="flex items-center justify-center w-full h-full overflow-hidden bg-black [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:block [&_iframe]:border-0">
+      <div className="relative flex items-center justify-center w-full h-full overflow-hidden bg-black [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:block [&_iframe]:border-0">
         <div ref={containerRef} className="w-full h-full pointer-events-none" />
 
-        <button
-          type="button"
-          aria-label={isPlaying ? "Pause video" : "Play video"}
-          onClick={togglePlay}
-          className="absolute inset-0 z-10 cursor-pointer w-full h-full bg-transparent border-0"
-        />
+        {isLoading && !error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] pointer-events-none z-20 transition-opacity duration-200">
+            <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+          </div>
+        )}
+
+        {error && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-neutral-950/95 text-white px-6 text-center z-30 select-none">
+            <div className="w-10 h-10 rounded-full bg-red-500/15 flex items-center justify-center text-red-400">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-white/80 max-w-xs">{error}</p>
+          </div>
+        )}
+
+        {!error && (
+          <button
+            type="button"
+            aria-label={isPlaying ? "Pause video" : "Play video"}
+            onClick={togglePlay}
+            className="absolute inset-0 z-10 cursor-pointer w-full h-full bg-transparent border-0"
+          />
+        )}
       </div>
 
-      <div className="absolute top-full inset-x-0 max-md:w-full w-[50%] mx-auto mt-4 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white h-10 px-4">
+      {!error && (
+        <div className="absolute top-full inset-x-0 max-md:w-full w-[50%] mx-auto mt-4 flex items-center gap-3 bg-black/60 backdrop-blur-md text-white/80 hover:text-white h-10 px-4">
         <button
           type="button"
           onClick={togglePlay}
@@ -368,7 +418,7 @@ export default function YouTubeEmbed({
           <button
             type="button"
             onClick={toggleCaptions}
-            aria-label={isCaptionsEnabled ? "Desactivar subtítulos" : "Activar subtítulos"}
+            aria-label={isCaptionsEnabled ? "Disable captions" : "Enable captions"}
             className={`cursor-pointer flex flex-col items-center justify-center w-5 h-5 relative transition-opacity duration-150 ${isCaptionsEnabled ? "opacity-100 text-white" : "opacity-40 hover:opacity-80 text-white"
               }`}
           >
@@ -443,6 +493,7 @@ export default function YouTubeEmbed({
           />
         </div>
       </div>
+      )}
     </div>
   );
 }
