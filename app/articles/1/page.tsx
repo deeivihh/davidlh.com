@@ -17,9 +17,9 @@ export const metadata: Metadata = {
         type: "article",
         images: [
             {
-                url: "/articles/1/og-image.jpg",
-                width: 1200,
-                height: 630,
+                url: "/articles/1/og-image.png",
+                width: 1920,
+                height: 1080,
                 alt: "The AI that could kill us might also free us",
             },
         ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "The AI that could kill us might also free us",
         description: "AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.",
-        images: ["/articles/1/og-image.jpg"],
+        images: ["/articles/1/og-image.png"],
     },
     keywords: [
         "AI",
