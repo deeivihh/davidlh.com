@@ -1,6 +1,45 @@
+import type { Metadata } from "next";
 import Return from "@/components/return";
 import Signature from "@/components/signature";
 import Video from "@/components/video";
+
+export const metadata: Metadata = {
+    title: "The AI that could kill us might also free us",
+    description: "AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.",
+    alternates: {
+        canonical: "https://davidlh.com/articles/1",
+    },
+    openGraph: {
+        title: "The AI that could kill us might also free us",
+        description: "AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.",
+        url: "https://davidlh.com/articles/1",
+        siteName: "David Lahoz",
+        type: "article",
+        images: [
+            {
+                url: "/articles/1/og-image.jpg",
+                width: 1200,
+                height: 630,
+                alt: "The AI that could kill us might also free us",
+            },
+        ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "The AI that could kill us might also free us",
+        description: "AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.",
+        images: ["/articles/1/og-image.jpg"],
+    },
+    keywords: [
+        "AI",
+        "Artificial Intelligence",
+        "Productivity",
+        "David Lahoz",
+    ],
+    authors: [{ name: "David Lahoz" }],
+    creator: "David Lahoz",
+    publisher: "David Lahoz",
+};
 
 export default function Article1() {
     return (
