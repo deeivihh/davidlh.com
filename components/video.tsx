@@ -63,7 +63,7 @@ export default function Video({
         playsInline
         preload="auto"
         onLoadedData={handleLoaded}
-        className={`h-full w-auto aspect-video block pointer-events-none transition-opacity duration-500 ease-out ${
+        className={`h-full w-auto block pointer-events-none transition-opacity duration-500 ease-out ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
       />

@@ -131,9 +131,8 @@ export default function Carousel({
       style={{
         maxWidth: maxWidth ? `${maxWidth}px` : undefined,
       }}
-      className={`flex gap-2.5 overflow-x-auto w-fit max-w-full overscroll-x-contain pb-3 custom-scrollbar select-none min-h-[8.75rem] sm:min-h-[10.75rem] ${
-        isDragging ? "cursor-grabbing [&_*]:cursor-grabbing" : "cursor-grab"
-      }`}
+      className={`flex gap-2.5 overflow-x-auto w-fit max-w-full overscroll-x-contain pb-3 custom-scrollbar select-none min-h-[8.75rem] sm:min-h-[10.75rem] ${isDragging ? "cursor-grabbing [&_*]:cursor-grabbing" : "cursor-grab"
+        }`}
     >
       {media.map((item) => (
         <CarouselItem
@@ -204,7 +203,7 @@ function CarouselItem({
       key={item.src}
       type="button"
       onClick={() => !drag.current.moved && setActive(item)}
-      className={`shrink-0 h-32 sm:h-40 w-auto p-0 border-0 bg-neutral-100 text-left cursor-pointer overflow-hidden [&>img]:h-full [&>img]:w-auto [&>img]:object-cover [&>video]:h-full [&>video]:w-auto transition-opacity duration-500 ease-out ${
+      className={`shrink-0 h-32 sm:h-40 w-auto p-0 border-0 bg-transparent text-left cursor-pointer overflow-hidden [&>img]:h-full [&>img]:w-auto [&>img]:object-cover [&>video]:h-full [&>video]:w-auto [&>video]:object-cover transition-opacity duration-500 ease-out ${
         isCarouselReady ? "opacity-100" : "opacity-0 pointer-events-none"
       } ${
         isDragging ? "cursor-grabbing" : ""
