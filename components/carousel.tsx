@@ -23,12 +23,34 @@ export default function Carousel({
   const drag = useRef({ isDown: false, startX: 0, scroll: 0, moved: false });
   const [isDragging, setIsDragging] = useState(false);
   const [maxWidth, setMaxWidth] = useState<number | undefined>(undefined);
+  const [loadedSet, setLoadedSet] = useState<Set<string>>(() => new Set());
+  const [timedOut, setTimedOut] = useState(false);
 
   const stopDrag = () => {
     drag.current.isDown = false;
     setIsDragging(false);
     setTimeout(() => (drag.current.moved = false), 50);
   };
+
+  const handleItemLoaded = useCallback((src: string) => {
+    setLoadedSet((prev) => {
+      if (prev.has(src)) return prev;
+      const next = new Set(prev);
+      next.add(src);
+      return next;
+    });
+  }, []);
+
+  const targetMedia = media.slice(0, Math.min(media.length, 3));
+  const isCarouselReady =
+    timedOut || (targetMedia.length > 0 && targetMedia.every((item) => loadedSet.has(item.src)));
+
+  useEffect(() => {
+    setLoadedSet(new Set());
+    setTimedOut(false);
+    const timer = setTimeout(() => setTimedOut(true), 600);
+    return () => clearTimeout(timer);
+  }, [media]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -63,7 +85,7 @@ export default function Carousel({
       resizeObserver.disconnect();
       window.removeEventListener("resize", updateMaxWidth);
     };
-  }, [media]);
+  }, [media, isCarouselReady]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -121,6 +143,8 @@ export default function Carousel({
           drag={drag}
           setActive={setActive}
           renderMedia={renderMedia}
+          isCarouselReady={isCarouselReady}
+          onLoaded={handleItemLoaded}
         />
       ))}
     </div>
@@ -133,17 +157,24 @@ function CarouselItem({
   drag,
   setActive,
   renderMedia,
+  isCarouselReady,
+  onLoaded,
 }: {
   item: MediaItem;
   isDragging: boolean;
   drag: React.MutableRefObject<{ isDown: boolean; startX: number; scroll: number; moved: boolean }>;
   setActive: (item: MediaItem) => void;
   renderMedia: (item: MediaItem, isMax?: boolean) => React.ReactNode;
+  isCarouselReady: boolean;
+  onLoaded: (src: string) => void;
 }) {
   const wrapperRef = useRef<HTMLButtonElement>(null);
   const [loaded, setLoaded] = useState(false);
 
-  const handleLoaded = useCallback(() => setLoaded(true), []);
+  const handleLoaded = useCallback(() => {
+    setLoaded(true);
+    onLoaded(item.src);
+  }, [item.src, onLoaded]);
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -173,8 +204,8 @@ function CarouselItem({
       key={item.src}
       type="button"
       onClick={() => !drag.current.moved && setActive(item)}
-      className={`shrink-0 h-32 sm:h-40 w-auto p-0 border-0 bg-transparent text-left cursor-pointer overflow-hidden [&>img]:h-full [&>img]:w-auto [&>img]:object-cover [&>video]:h-full [&>video]:w-auto transition-opacity duration-500 ease-out ${
-        loaded ? "opacity-100" : "opacity-0 pointer-events-none"
+      className={`shrink-0 h-32 sm:h-40 w-auto p-0 border-0 bg-neutral-100 text-left cursor-pointer overflow-hidden [&>img]:h-full [&>img]:w-auto [&>img]:object-cover [&>video]:h-full [&>video]:w-auto transition-opacity duration-500 ease-out ${
+        isCarouselReady ? "opacity-100" : "opacity-0 pointer-events-none"
       } ${
         isDragging ? "cursor-grabbing" : ""
       }`}
