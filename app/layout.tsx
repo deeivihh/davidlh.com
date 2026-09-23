@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     canonical: "https://davidlh.com",
   },
   openGraph: {
-    images: "/og/og-image.jpg",
+    images: "https://davidlh.com/og/og-image.jpg",
     title: "David Lahoz",
     description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
     type: "website",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    images: "/og/og-image.jpg",
+    images: "https://davidlh.com/og/og-image.jpg",
     title: "David Lahoz",
     site: "davidlh.com",
     description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
