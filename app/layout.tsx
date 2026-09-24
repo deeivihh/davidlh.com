@@ -17,22 +17,31 @@ const body = Lora({
 export const metadata: Metadata = {
   title: "David Lahoz",
   description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
+  themeColor: "#FFFFFF",
   alternates: {
     canonical: "https://davidlh.com",
   },
   openGraph: {
-    images: "https://davidlh.com/og/og-image.jpg",
+    images: [
+      {
+        url: "https://davidlh.com/og/og-image.jpg",
+        width: 1920,
+        height: 1080,
+        alt: "David Lahoz",
+      },
+    ],
     title: "David Lahoz",
     description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
     type: "website",
     url: "https://davidlh.com",
     siteName: "David Lahoz",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     images: "https://davidlh.com/og/og-image.jpg",
     title: "David Lahoz",
-    site: "davidlh.com",
+    site: "@deeivihh",
     description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
   },
   icons: {
@@ -49,6 +58,20 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${titles.variable} ${body.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              "name": "David Lahoz",
+              "description": "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
+              "url": "https://davidlh.com",
+            }),
+          }}
+        />
+      </head>
       <body className="max-xl:px-8">{children}</body>
     </html>
   );

@@ -23,12 +23,14 @@ export const metadata: Metadata = {
                 alt: "The AI that could kill us might also free us",
             },
         ],
+        locale: "en_US"
     },
     twitter: {
         card: "summary_large_image",
         title: "The AI that could kill us might also free us",
         description: "AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.",
         images: ["https://davidlh.com/articles/1/og-image.jpg"],
+        site: "@deeivihh"
     },
     keywords: [
         "AI",
@@ -39,11 +41,29 @@ export const metadata: Metadata = {
     authors: [{ name: "David Lahoz" }],
     creator: "David Lahoz",
     publisher: "David Lahoz",
+    themeColor: "#FFFFFF"
 };
 
 export default function Article1() {
     return (
         <main className="max-md:mt-[8svh] mt-[10svh] pb-10 max-w-[75ch] flex flex-col gap-6 justify-start items-start mx-auto">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Article",
+                        "headline": "The AI that could kill us might also free us",
+                        "description": "AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.",
+                        "author": {
+                            "@type": "Person",
+                            "name": "David Lahoz",
+                        },
+                        "datePublished": "2026-09-23",
+                        "image": "https://davidlh.com/articles/1/og-image.jpg",
+                    }),
+                }}
+            />
             <Return />
             <article className="flex flex-col gap-10 w-full">
                 <div className="flex flex-col gap-4">
