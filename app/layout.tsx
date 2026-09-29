@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Lora } from "next/font/google";
 import "./globals.css";
 
@@ -15,9 +15,8 @@ const body = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "David Lahoz",
+  title: "David Lahoz — Frontend Developer & Marketing Student",
   description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
-  themeColor: "#FFFFFF",
   alternates: {
     canonical: "https://davidlh.com",
   },
@@ -30,7 +29,7 @@ export const metadata: Metadata = {
         alt: "David Lahoz",
       },
     ],
-    title: "David Lahoz",
+    title: "David Lahoz — Frontend Developer & Marketing Student",
     description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
     type: "website",
     url: "https://davidlh.com",
@@ -40,13 +39,14 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     images: "https://davidlh.com/og/og-image.jpg",
-    title: "David Lahoz",
+    title: "David Lahoz — Frontend Developer & Marketing Student",
     site: "@deeivihh",
     description: "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
   },
   icons: {
     icon: [
       { url: "/og/favicon.jpg" },
+      { url: "/og/favicon.svg", type: "image/svg+xml" },
     ],
   },
   keywords: ["David Lahoz", "davidlh", "frontend", "developer", "marketing", "data", "AI", "brand", "experiences"],
@@ -55,22 +55,33 @@ export const metadata: Metadata = {
   publisher: "David Lahoz",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${titles.variable} ${body.variable}`}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebPage",
-              "name": "David Lahoz",
-              "description": "David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences",
-              "url": "https://davidlh.com",
-            }),
-          }}
-        />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ProfilePage',
+            mainEntity: {
+              '@type': 'Person',
+              name: 'David Lahoz',
+              description: 'David Lahoz is a frontend developer and marketing student working across digital products, data, AI and brand experiences',
+              url: 'https://davidlh.com',
+              sameAs: [
+                'https://www.linkedin.com/in/deeivihh/',
+                'https://github.com/deeivihh',
+              ],
+            },
+          }),
+        }}
+      />
       </head>
       <body className="max-xl:px-8">{children}</body>
     </html>
