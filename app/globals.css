@@ -11,6 +11,11 @@
   color: #333333;
 }
 
+::selection {
+  background: #000000;
+  color: #ffffff;
+}
+
 body {
   margin: 0;
   font-family: var(--font-body), sans-serif;
