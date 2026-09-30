@@ -144,7 +144,9 @@ const articles: ArticleItem[] = [
 export default function Home() {
   const [active, setActive] = useState<MediaItem | null>(null);
   const [msg, setMsg] = useState("");
+  const [isContactHovered, setIsContactHovered] = useState(false);
   const timer = useRef<NodeJS.Timeout | null>(null);
+  const resetMessageTimer = useRef<NodeJS.Timeout | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
   const flash = (text: string) => {
@@ -157,7 +159,9 @@ export default function Home() {
     if (e.detail > 1) {
       clearTimeout(timer.current!);
       flash("(opening your mail client...)");
-      window.location.href = "mailto:hello@davidlh.com";
+      setTimeout(() => {
+        window.location.href = "mailto:hello@davidlh.com";
+      }, 160);
     } else {
       timer.current = setTimeout(() => {
         navigator.clipboard?.writeText("hello@davidlh.com");
@@ -166,7 +170,10 @@ export default function Home() {
     }
   };
 
-  useEffect(() => () => clearTimeout(timer.current!), []);
+  useEffect(() => () => {
+    clearTimeout(timer.current!);
+    clearTimeout(resetMessageTimer.current!);
+  }, []);
 
 
   useEffect(() => {
@@ -216,7 +223,19 @@ export default function Home() {
             <h1 className="text-5xl">David Lahoz</h1>
             <h3 className="text-xl px-0.5">is a <span className="italic font-medium">frontend developer</span> and <span className="italic font-medium">marketing student</span> working across digital products, data, AI and brand experiences.</h3>
           </div>
-          <address className="group relative flex items-center w-fit px-0.5 select-none not-italic">
+          <address
+            className="group relative flex items-center w-fit px-0.5 select-none not-italic"
+            onMouseEnter={() => {
+              clearTimeout(resetMessageTimer.current!);
+              setIsContactHovered(true);
+            }}
+            onMouseLeave={() => {
+              clearTimeout(timer.current!);
+              setIsContactHovered(false);
+              clearTimeout(resetMessageTimer.current!);
+              resetMessageTimer.current = setTimeout(() => setMsg(""), 200);
+            }}
+          >
             <button
               type="button"
               onClick={handleContactClick}
@@ -225,9 +244,9 @@ export default function Home() {
               hello@davidlh.com
             </button>
             <span
-              className={`absolute left-full top-1/2 -translate-y-1/2 text-xs transition-[opacity,margin-left,filter,pointer-events] duration-200 whitespace-nowrap select-none ${msg
+              className={`absolute left-full top-1/2 -translate-y-1/2 text-xs transition-[opacity,margin-left,filter,pointer-events] duration-200 whitespace-nowrap select-none ${isContactHovered
                 ? "ml-2 opacity-100 blur-none pointer-events-auto"
-                : "hidden sm:inline -ml-2 group-hover:ml-2 opacity-0 group-hover:opacity-100 blur group-hover:blur-none pointer-events-none group-hover:pointer-events-auto"
+                : "sm:inline -ml-2 opacity-0 blur pointer-events-none"
                 }`}
             >
               {msg || "(one click to copy — two to open in your mail client)"}
