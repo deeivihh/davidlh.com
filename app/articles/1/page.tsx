@@ -64,16 +64,19 @@ export default function Article1() {
                     }),
                 }}
             />
-            <Return />
-            <article className="flex flex-col gap-10 w-full">
-                <div className="flex flex-col gap-4">
-                    <h1 className="text-5xl">The AI that could kill us might also free us</h1>
-                    <p className="text-xl px-0.5">AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.</p>
-                    <div className="flex justify-center items-center w-full">
+            <article className="relative flex flex-col w-full">
+                <div className="relative sticky top-0 z-20 flex w-full justify-center max-md:text-center py-4">
+                    <div className="absolute inset-0 -z-10 bg-white" />
+                    <Return absolute />
+                    <h1 className="relative text-5xl min-md:pr-1">The AI that could kill us might also free us</h1>
+                </div>
+                <div className="flex flex-col gap-4 w-full items-center justify-center">
+                    <p className="text-xl min-md:pr-1 max-md:max-w-xs max-w-2xl text-center text-balance max-md:text-justify px-2">AI could become the most humanizing tech ever created, if we stop using it only to demand more productivity from people.</p>
+                    <div className="flex justify-center items-center w-full border-b border-black px-0.5 mt-4">
                         <Video src="/articles/1/main.mp4" />
                     </div>
                 </div>
-                <div className="flex flex-col gap-6 px-0.5 text-lg leading-relaxed">
+                <div className="flex flex-col gap-6 text-lg leading-relaxed bg-black text-white p-6 py-8">
                     <p>
                         These days, we hear a lot about how AI could kill us all in less than ten years. Just a few months ago, however, the big concern was whether artificial intelligence would replace us at work. Some insisted that a machine could never do what we do, while others argued that we would have to work harder to remain useful.
                     </p>
