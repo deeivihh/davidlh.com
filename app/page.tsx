@@ -314,7 +314,7 @@ export default function Home() {
             </p>
 
             <p>
-              He is currently studying Marketing and exploring how
+              He is currently based in Spain, studying Marketing and exploring how
               technology, design and communication can work together.
             </p>
 
