@@ -18,8 +18,8 @@ export const metadata: Metadata = {
         images: [
             {
                 url: "https://davidlh.com/articles/1/og-image.jpg",
-                width: 1920,
-                height: 1080,
+                width: 1200,
+                height: 630,
                 alt: "The AI that could kill us might also free us",
             },
         ],
