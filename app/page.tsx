@@ -57,7 +57,7 @@ type LikeItem = {
 const likes: LikeItem[] = [
   {
     title: "Anthropic — Keep Thinking with Claude",
-    category: "Campaign",
+    category: "Campaigns",
     description:
       "A campaign that turns “having a problem” into a reason for optimism.",
     media: {
@@ -68,7 +68,7 @@ const likes: LikeItem[] = [
   },
   {
     title: "Apple — Great Ideas Start Here",
-    category: "Campaign",
+    category: "Campaigns",
     description:
       "A student campaign that makes failure feel like part of the process.",
     media: {
@@ -79,7 +79,7 @@ const likes: LikeItem[] = [
   },
   {
     title: "Honda — Keep Up",
-    category: "Campaign",
+    category: "Campaigns",
     description:
       "This campaign does not ask you to keep up. It challenges you to.",
     media: {
@@ -90,7 +90,7 @@ const likes: LikeItem[] = [
   },
   {
     title: "a16z — We’re Going Back to the Moon",
-    category: "Campaign",
+    category: "Campaigns",
     description:
       "A cinematic reminder that the future is still being built.",
     media: {
@@ -100,19 +100,8 @@ const likes: LikeItem[] = [
     },
   },
   {
-    title: "Zohran Mamdani — Zohran for NYC",
-    category: "Political campaign",
-    description:
-      "A refreshing, human, and deeply effective digital campaign that shows how politics can be done differently.",
-    media: {
-      type: "youtube",
-      src: "UzNEFwLz6C4",
-      title: "Zohran Mamdani — Zohran for NYC",
-    },
-  },
-  {
     title: "Andalucía — Andalusian Crush",
-    category: "Campaign",
+    category: "Campaigns",
     description:
       "A tourism campaign that turns a destination into an irresistible warning.",
     media: {
@@ -121,7 +110,46 @@ const likes: LikeItem[] = [
       title: "Andalucía — Andalusian Crush",
     },
   },
+  {
+    title: "Steve Jobs — Make Something Wonderful",
+    category: "Books",
+    description:
+      "A book that compiles Steve Jobs’ speeches, interviews, and letters to inspire readers to create something meaningful.",
+    media: {
+      type: "img",
+      src: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1773602394i/128533513.jpg",
+      title: "Steve Jobs — Make Something Wonderful",
+    },
+  },
+    {
+    title: "Rick Rubin — The Creative Act: A Way of Being",
+    category: "Books",
+    description:
+      "A book that explores the creative process and how to cultivate a mindset that allows for artistic expression and innovation.",
+    media: {
+      type: "img",
+      src: "https://m.media-amazon.com/images/I/918EkrTDaRL._AC_UF1000,1000_QL80_.jpg",
+      title: "Rick Rubin — The Creative Act: A Way of Being",
+    },
+  },
+    {
+    title: "Zohran Mamdani — Zohran for NYC",
+    category: "Political campaigns",
+    description:
+      "A refreshing, human, and deeply effective digital campaign that shows how politics can be done differently.",
+    media: {
+      type: "youtube",
+      src: "UzNEFwLz6C4",
+      title: "Zohran Mamdani — Zohran for NYC",
+    },
+  },
 ];
+
+const likesByCategory = likes.reduce<Record<string, LikeItem[]>>((groups, item) => {
+  const category = item.category ?? "Other";
+  (groups[category] ??= []).push(item);
+  return groups;
+}, {});
 
 type ArticleItem = {
   title: string;
@@ -302,55 +330,55 @@ export default function Home() {
         </section>
         <section className="px-0.5 w-full flex flex-col gap-4">
           <span className="uppercase font-bold text-sm">Things he likes</span>
-          <div className="flex flex-col gap-2">
-            <ul className="flex flex-col gap-4">
-              {likes.map((item) => {
-                const content = (
-                  <>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium group-hover:underline underline-offset-4">
-                        {item.title}
-                      </span>
-                      {item.category && (
-                        <span className="text-[11px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500 font-normal select-none">
-                          {item.category}
+          <div className="flex flex-col gap-6">
+            {Object.entries(likesByCategory).map(([category, items]) => (
+              <div key={category} className="flex flex-col gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-[#666666]">
+                  {category}
+                </span>
+                <ul className="flex flex-col gap-4">
+                  {items.map((item) => {
+                    const content = (
+                      <>
+                        <span className="font-medium group-hover:underline underline-offset-4">
+                          {item.title}
                         </span>
-                      )}
-                    </div>
-                    <span className="text-xs text-[#666666]">
-                      {item.description}
-                    </span>
-                  </>
-                );
+                        <span className="text-xs text-[#666666]">
+                          {item.description}
+                        </span>
+                      </>
+                    );
 
-                return (
-                  <li key={item.title}>
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
-                      >
-                        {content}
-                      </a>
-                    ) : item.media ? (
-                      <button
-                        type="button"
-                        onClick={() => setActive(item.media!)}
-                        className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
-                      >
-                        {content}
-                      </button>
-                    ) : (
-                      <div className="flex flex-col gap-1 w-fit text-left">
-                        {content}
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+                    return (
+                      <li key={item.title}>
+                        {item.href ? (
+                          <a
+                            href={item.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
+                          >
+                            {content}
+                          </a>
+                        ) : item.media ? (
+                          <button
+                            type="button"
+                            onClick={() => setActive(item.media!)}
+                            className="group cursor-pointer flex flex-col gap-1 w-fit text-left"
+                          >
+                            {content}
+                          </button>
+                        ) : (
+                          <div className="flex flex-col gap-1 w-fit text-left">
+                            {content}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
           </div>
         </section>
         <section className="px-0.5 w-full flex flex-col gap-4">
@@ -416,8 +444,7 @@ export default function Home() {
               tabIndex={0}
               role="button"
               aria-label="Close preview"
-              className={`fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out ${active.type === "youtube" ? "bg-black" : "bg-black/90 backdrop-blur"
-                }`}
+              className={`fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out bg-black`}
             >
               <m.div
                 initial={{
