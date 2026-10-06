@@ -444,7 +444,7 @@ export default function Home() {
               tabIndex={0}
               role="button"
               aria-label="Close preview"
-              className={`fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out bg-black`}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-zoom-out bg-black"
             >
               <m.div
                 initial={{
