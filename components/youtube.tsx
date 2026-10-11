@@ -76,6 +76,7 @@ export default function YouTubeEmbed({
   const initialVolumeSet = useRef(false);
   const prevVolume = useRef<number | null>(null);
   const tracksRef = useRef<any[]>([]);
+  const hasStartedPlaying = useRef(false);
 
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -143,6 +144,7 @@ export default function YouTubeEmbed({
     setIsLoading(true);
     setError(null);
     tracksRef.current = [];
+    hasStartedPlaying.current = false;
 
     if (isMobile) setIsMuted(true);
 
@@ -237,8 +239,11 @@ export default function YouTubeEmbed({
             onStateChange: (event: any) => {
               if (cancelled) return;
               if (event.data === yt.PlayerState.BUFFERING) {
-                setIsLoading(true);
+                if (!hasStartedPlaying.current) {
+                  setIsLoading(true);
+                }
               } else if (event.data === yt.PlayerState.PLAYING) {
+                hasStartedPlaying.current = true;
                 setIsLoading(false);
                 setError(null);
                 setIsPlaying(true);
@@ -407,7 +412,7 @@ export default function YouTubeEmbed({
         <div ref={containerRef} className="w-full h-full pointer-events-none" />
 
         {isLoading && !error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] pointer-events-none z-20 transition-opacity duration-200">
+          <div className="absolute inset-0 flex items-center justify-center bg-black pointer-events-none z-20 transition-opacity duration-200">
             <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin" />
           </div>
         )}
