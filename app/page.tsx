@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { AnimatePresence, LazyMotion, domAnimation, useReducedMotion } from "motion/react";
 import * as m from "motion/react-m";
 import Video from "@/components/video";
@@ -8,7 +8,14 @@ import YouTubeEmbed from "@/components/youtube";
 import Carousel, { type MediaItem } from "@/components/carousel";
 import Link from "vinext/shims/link";
 
-const projects = [
+type Project = {
+  title: string;
+  description: string;
+  href?: string;
+  media: MediaItem[];
+};
+
+const products: Project[] = [
   {
     title: "¿Me puedo quedar?",
     description:
@@ -42,6 +49,19 @@ const projects = [
     media: [
       { type: "img", src: "/projects/applio/1.jpg" },
       { type: "img", src: "/projects/applio/2.jpg" }
+    ] as MediaItem[],
+  },
+];
+
+const coursework: Project[] = [
+    {
+    title: "Cafume",
+    description:
+      `Was a project focused on creating an innovative product, building a brand around it, designing merchandise, and exploring its commercial potential. The idea behind Cafume was to combine café (coffee) and perfume, creating a crazy yet creative concept that blends fragrance with food flavoring.`,
+    media: [
+      { type: "img", src: "/projects/cafume/1.jpg" },
+      { type: "img", src: "/projects/cafume/2.jpg" },
+      { type: "img", src: "/projects/cafume/3.jpg" }
     ] as MediaItem[],
   },
 ];
@@ -171,6 +191,7 @@ const articles: ArticleItem[] = [
 
 export default function Home() {
   const [active, setActive] = useState<MediaItem | null>(null);
+  const [activeProjectCategory, setActiveProjectCategory] = useState<"products" | "coursework">("products");
   const [msg, setMsg] = useState("");
   const [isContactHovered, setIsContactHovered] = useState(false);
   const timer = useRef<NodeJS.Timeout | null>(null);
@@ -283,26 +304,69 @@ export default function Home() {
         </section>
         <section className="px-0.5 w-full">
           <div className="flex flex-col gap-4 w-full">
-            <span className="uppercase font-bold text-sm">Projects</span>
-            <ul className="grid gap-6 w-full">
-              {projects.map((project) => (
-                <li key={project.title} className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-2 w-full">
-                    <a href={project.href} target="_blank" rel="noopener noreferrer" className="text-xl flex items-center gap-2 group cursor-pointer w-fit">{project.title}
-                      <span className="opacity-0 -ml-4 group-hover:ml-0 group-hover:opacity-100 blur-lg group-hover:blur-none w-4 h-4 transition-[opacity,margin-left,filter,pointer-events] duration-150"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#333333"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g id="Complete"> <g id="arrow-up-right"> <g> <polyline data-name="Right" fill="none" id="Right-2" points="18.7 12.4 18.7 5.3 11.6 5.3" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline> <line fill="none" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="5.3" x2="17.1" y1="18.7" y2="6.9"></line> </g> </g> </g> </g></svg></span>
-                    </a>
-                    <span className="text-xs">{project.description}</span>
-                  </div>
-                  <div className="relative w-full">
-                    <Carousel
-                      media={project.media}
-                      setActive={setActive}
-                      renderMedia={renderMedia}
-                    />
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                {[
+                  { label: "Products", value: "products" as const },
+                  { label: "Coursework", value: "coursework" as const },
+                ].map((category, index) => (
+                  <Fragment key={category.value}>
+                    {index > 0 && <span aria-hidden="true" className="-mt-1 text-sm">/</span>}
+                    <button
+                      type="button"
+                      onClick={() => setActiveProjectCategory(category.value)}
+                      aria-pressed={activeProjectCategory === category.value}
+                      className={`uppercase font-bold text-sm cursor-pointer transition-colors duration-150 ${
+                        activeProjectCategory === category.value
+                          ? ""
+                          : "text-[#999999] hover:text-[#333333]"
+                      }`}
+                    >
+                      {category.label}
+                    </button>
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+            {[
+              { value: "products" as const, items: products },
+              { value: "coursework" as const, items: coursework },
+            ].map((category) => {
+              const isVisible = activeProjectCategory === category.value;
+
+              return (
+                <div
+                  key={category.value}
+                  className={isVisible ? "flex flex-col gap-4" : "hidden"}
+                  aria-hidden={!isVisible}
+                >
+                  <ul className="grid gap-6 w-full">
+                {category.items.map((project) => (
+                  <li key={project.title} className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2 w-full">
+                      {project.href ? (
+                        <a href={project.href} target="_blank" rel="noopener noreferrer" className="text-xl flex items-center gap-2 group cursor-pointer w-fit">{project.title}
+                          <span className="opacity-0 -ml-4 group-hover:ml-0 group-hover:opacity-100 blur-lg group-hover:blur-none w-4 h-4 transition-[opacity,margin-left,filter,pointer-events] duration-150"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#333333"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g id="Complete"> <g id="arrow-up-right"> <g> <polyline data-name="Right" fill="none" id="Right-2" points="18.7 12.4 18.7 5.3 11.6 5.3" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline> <line fill="none" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="5.3" x2="17.1" y1="18.7" y2="6.9"></line> </g> </g> </g> </g></svg></span>
+                        </a>
+                      ) : (
+                        <span className="text-xl">{project.title}</span>
+                      )}
+                      <span className="text-xs">{project.description}</span>
+                    </div>
+                    <div className="relative w-full">
+                      <Carousel
+                        media={project.media}
+                        setActive={setActive}
+                        renderMedia={renderMedia}
+                        isVisible={isVisible}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+                </div>
+              );
+            })}
           </div>
         </section>
         <section className="px-0.5 w-full flex flex-col gap-4">

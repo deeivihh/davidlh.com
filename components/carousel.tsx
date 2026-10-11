@@ -12,12 +12,14 @@ type CarouselProps = {
   media: MediaItem[];
   setActive: (item: MediaItem) => void;
   renderMedia: (item: MediaItem, isMax?: boolean) => React.ReactNode;
+  isVisible?: boolean;
 };
 
 export default function Carousel({
   media,
   setActive,
   renderMedia,
+  isVisible = true,
 }: CarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const drag = useRef({ isDown: false, startX: 0, scroll: 0, moved: false });
@@ -85,7 +87,7 @@ export default function Carousel({
       resizeObserver.disconnect();
       window.removeEventListener("resize", updateMaxWidth);
     };
-  }, [media, isCarouselReady]);
+  }, [media, isCarouselReady, isVisible]);
 
   useEffect(() => {
     const el = containerRef.current;
