@@ -152,16 +152,6 @@ const likes: LikeItem[] = [
       title: "Rick Rubin — The Creative Act: A Way of Being",
     },
   },
-    {
-    title: "Zohran Mamdani — Zohran for NYC",
-    category: "Political campaigns",
-    description:
-      "A refreshing, human, and deeply effective digital campaign that shows how politics can be done differently.",
-    media: {
-      type: "youtube",
-      src: "UzNEFwLz6C4",
-      title: "Zohran Mamdani — Zohran for NYC",
-    },
   },
 ];
 
