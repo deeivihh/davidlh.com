@@ -152,7 +152,6 @@ const likes: LikeItem[] = [
       title: "Rick Rubin — The Creative Act: A Way of Being",
     },
   },
-  },
 ];
 
 const likesByCategory = likes.reduce<Record<string, LikeItem[]>>((groups, item) => {
