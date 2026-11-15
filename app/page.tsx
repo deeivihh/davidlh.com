@@ -13,6 +13,7 @@ type Project = {
   description: string;
   href?: string;
   media: MediaItem[];
+  awarded?: boolean;
 };
 
 const products: Project[] = [
@@ -27,6 +28,7 @@ const products: Project[] = [
       { type: "img", src: "/projects/mepuedoquedar-es/1.jpg" },
       { type: "img", src: "/projects/mepuedoquedar-es/2.jpg" },
     ] as MediaItem[],
+    awarded: true,
   },
   {
     title: "Dione",
@@ -334,9 +336,17 @@ export default function Home() {
                   <li key={project.title} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2 w-full">
                       {project.href ? (
-                        <a href={project.href} target="_blank" rel="noopener noreferrer" className="text-xl flex items-center gap-2 group cursor-pointer w-fit">{project.title}
+                        <div className="flex items-center justify-start">
+                        {project.awarded && (
+                          <div className="z-50 mr-2">
+                            <span className="text-xs font-semibold bg-[#EFCB64] border border-white/20 px-1.5 py-0.5 mr-2.5">Awarded</span>
+                            -
+                          </div>
+                        )}
+                        <a href={project.href} target="_blank" rel="noopener noreferrer" className="text-xl flex items-center justify-center gap-2 group cursor-pointer w-fit">{project.title}
                           <span className="opacity-0 -ml-4 group-hover:ml-0 group-hover:opacity-100 blur-lg group-hover:blur-none w-4 h-4 transition-[opacity,margin-left,filter,pointer-events] duration-150"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#333333"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g id="Complete"> <g id="arrow-up-right"> <g> <polyline data-name="Right" fill="none" id="Right-2" points="18.7 12.4 18.7 5.3 11.6 5.3" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline> <line fill="none" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="5.3" x2="17.1" y1="18.7" y2="6.9"></line> </g> </g> </g> </g></svg></span>
                         </a>
+                        </div>
                       ) : (
                         <span className="text-xl">{project.title}</span>
                       )}
