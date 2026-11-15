@@ -1,1 +1,1 @@
-### [davidlh.com](https://davidlh.com)
+![David Lahoz](https://davidlh.com/og/og-image.jpg)
